@@ -7,7 +7,7 @@ from app.schema import *
 from sqlalchemy.exc import IntegrityError
 from typing import List
 
-app = FastAPI()
+app = FastAPI(swagger_ui_parameters={"syntaxHighlight.theme": "obsidian"})
 
 # Create the database tables if they don't exist
 Base.metadata.create_all(bind=engine)
@@ -16,7 +16,6 @@ Base.metadata.create_all(bind=engine)
 @app.get('/')
 def get_home():
     return { "status":"OK", "message": "Welcome to Home Page"}
-
 
 @app.get('/users/')
 def get_all_users(db: Session=Depends(get_db)):
