@@ -12,7 +12,7 @@ class UserCreate(UserBase):
 class UserRead(UserBase):
     id: int
     class Config:
-        orm_model = True
+        orm_mode = True    
 
 class UserUpdate(UserBase):
     pass

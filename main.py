@@ -1,10 +1,11 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.database import *
 from app.models import *
-from app.schema import UserCreate
+from app.schema import *
 from sqlalchemy.exc import IntegrityError
-
+from typing import List
 
 app = FastAPI()
 
@@ -16,6 +17,20 @@ Base.metadata.create_all(bind=engine)
 def get_home():
     return { "status":"OK", "message": "Welcome to Home Page"}
 
+
+@app.get('/users/')
+def get_all_users(db: Session=Depends(get_db)):
+    try:
+       users = db.query(User).all()
+       user_responses = [UserRead.from_orm(user) for user in users]
+       return JSONResponse(
+            content={
+                "users": [user.dict() for user in user_responses]
+            }
+        )
+    except Exception as e:
+         db.rollback()
+         raise HTTPException(status_code=400,detail=f"Error: {str(e)}")
 
 @app.post('/users/')
 async def create_user(user: UserCreate,db:Session = Depends(get_db)):
