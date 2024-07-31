@@ -8,6 +8,8 @@ from sqlalchemy.exc import IntegrityError
 
 app = FastAPI()
 
+# Create the database tables if they don't exist
+Base.metadata.create_all(bind=engine)
 
 
 @app.get('/')
