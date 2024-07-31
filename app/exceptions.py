@@ -25,6 +25,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
                 status_code=200,
                 content={"status": "NOT_OK", "message": "Invalid Email"},
             )
+        if error["loc"] == ("body", "password"):
+            return JSONResponse(
+                status_code=200,
+                content={"status": "NOT_OK", "message": "Invalid Password"},
+            )
     return JSONResponse(
         status_code=400,
         content={"status": "NOT_OK", "message": "Validation Error", "detail": exc.errors()},
