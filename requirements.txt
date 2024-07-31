@@ -1,0 +1,11 @@
+uvicorn>=0.30.3
+fastapi>=0.111
+fastapi-cli>=0.0.4
+markdown-it-py>=3.0.0
+mdurl>=0.1.2
+pygments>=2.18.0
+rich>=13.7.1
+shellingham>=1.5.4
+starlette>=0.37.2
+typer>=0.12.3
+email_validator>=2.0.0
