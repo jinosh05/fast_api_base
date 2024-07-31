@@ -1,21 +1,26 @@
-from fastapi import HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-import app
 
-
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
+async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    if exc.status_code == 422:
+        return JSONResponse(
+            status_code=200,
+            content={"status": "NOT_OK", "message": "Invalid Username"},
+        )
     return JSONResponse(
         status_code=exc.status_code,
-        content={"message": exc.detail},
+        content={"detail": exc.detail},
     )
 
-# @app.post("/users/", response_model=UserCreate)
-# async def create_user(user: UserCreate):
-#     try:
-#         # Here you would normally save the user to the database
-#         # For the sake of this example, we just return the user
-#         return user
-#     except Exception as e:
-#         raise HTTPException(status_code=400, detail=str(e))
-
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    for error in exc.errors():
+        if error["loc"] == ("body", "name"):
+            return JSONResponse(
+                status_code=200,
+                content={"status": "NOT_OK", "message": "Invalid Username"},
+            )
+    return JSONResponse(
+        status_code=400,
+        content={"status": "NOT_OK", "message": "Validation Error", "detail": exc.errors()},
+    )
