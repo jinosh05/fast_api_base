@@ -20,6 +20,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
                 status_code=200,
                 content={"status": "NOT_OK", "message": "Invalid Username"},
             )
+        if error["loc"] == ("body", "email"):
+            return JSONResponse(
+                status_code=200,
+                content={"status": "NOT_OK", "message": "Invalid Email"},
+            )
     return JSONResponse(
         status_code=400,
         content={"status": "NOT_OK", "message": "Validation Error", "detail": exc.errors()},
