@@ -105,3 +105,24 @@ def update_user_by_id(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
+
+
+@app.delete("/users/{user_id}")
+def delete_user_by_id(user_id: int, db: Session = Depends(get_db), ):
+    try:
+        db_user = db.query(User).filter(User.id == user_id).first()
+        if not db_user:
+            return JSONResponse(
+                status_code=200,
+                content={"status": "NOT_OK", "message": "User Not Found"},
+            )
+        db.delete(db_user)
+        db.commit()
+        return JSONResponse(
+            status_code=200,
+            content={"status": "OK",
+                     "message": "User Account Deleted successfully"},
+        )
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
