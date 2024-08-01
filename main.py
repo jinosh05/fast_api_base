@@ -52,7 +52,10 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
         return JSONResponse(content={"status": "ok"})
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Email already registered")
+        return JSONResponse(
+                status_code=200,
+                content={"status": "NOT_OK", "message": "Email already registered"},
+            )
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
